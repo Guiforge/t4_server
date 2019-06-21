@@ -1,0 +1,23 @@
+{
+	"name": "super_file_transfert",
+	"version": "1.0.0",
+	"description": "",
+	"author": "",
+	"main": "server.js",
+	"scripts": {
+		"start": "node server.js",
+		"lint": "eslint .",
+		"scan": "synk test"
+	},
+	"dependencies": {
+		"express": "^4.17.1",
+		"helmet": "^3.18.0",
+		"swagger-jsdoc": "^3.2.9",
+		"swagger-ui-express": "^4.0.6"
+	},
+	"devDependencies": {
+		"eslint": "^5.16.0",
+		"eslint-plugin-import": "^2.17.3",
+		"eslint-plugin-security": "^1.4.0"
+	}
+}

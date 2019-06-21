@@ -1,0 +1,10 @@
+version: "3"
+services:
+  web:
+    build:
+      context: .
+    container_name: 'SuperFileTransfert_server'
+    # volumes:
+    #   - .:/usr/src/app
+    ports:
+      - 8080:8080
