@@ -1,21 +1,7 @@
 {
-    "env": {
-        "browser": true,
-        "es6": true,
-        "node" : true
-    },
-    "extends": [ "eslint:recommended","plugin:security/recommended"],
-    "plugins": [
-		"security"
-	],
-    "globals": {
-        "Atomics": "readonly",
-        "SharedArrayBuffer": "readonly"
-    },
-    "parserOptions": {
-        "ecmaVersion": 2018,
-        "sourceType": "module"
-    },
+    "extends": ["airbnb", "prettier","plugin:security/recommended"],
+    "plugins": ["prettier","security"],
     "rules": {
+      "prettier/prettier": ["error"]
     }
-}
+  }
