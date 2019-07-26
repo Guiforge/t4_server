@@ -4,10 +4,10 @@ const compression = require('compression');
 const RateLimit = require('express-rate-limit');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const jwt = require('express-jwt');
+// const jwt = require('express-jwt');
 
 const config = require('./src/config/index');
-const initEndpoints = require('./endpoints');
+const initEndpoints = require('./src/routes/routes');
 const logger = require('./src/utils/logger');
 require('./src/utils/db');
 
@@ -24,11 +24,11 @@ app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // ignore authentication on the following routes
-app.use(
-  jwt({ secret: config.jwt.secret }).unless({
-    path: ['/', '/auth/signup', '/auth/login', '/auth/forgot-password', '/auth/reset-password']
-  })
-);
+// app.use(
+//   jwt({ secret: config.jwt.secret }).unless({
+//     path: ['/', '/auth/signup', '/auth/login', '/auth/forgot-password', '/auth/reset-password']
+//   })
+// );
 
 // throw an error if a jwt is not passed in the request
 app.use((err, req, res, next) => {

@@ -5,10 +5,10 @@ const development = {
 };
 
 // mongodb://myDBReader:D1fficultP%40ssw0rd@mongodb0.example.com:27017/admin
-//uri: 'mongodb://netDb:27017/test' //'mongodb://root:example@t4_netDb:27017/superDB'
+// uri: 'mongodb://netDb:27017/test' //'mongodb://root:example@t4_netDb:27017/superDB'
 
 const test = {
-  uri: 'mongodb://mongo/test'
+  uri: 'mongodb://root:toor@mongo/admin'
 };
 
 const config = {
