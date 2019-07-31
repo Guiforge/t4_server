@@ -9,7 +9,7 @@ const cors = require('cors');
 const config = require('./src/config/index');
 const initEndpoints = require('./src/routes/routes');
 const logger = require('./src/utils/logger');
-require('./src/utils/db');
+require('./src/utils/db'); // connect database
 
 // App
 const app = express();
@@ -43,3 +43,10 @@ initEndpoints(app);
 
 app.listen(config.api.PORT, config.api.HOST);
 logger.info(`Running on http://${config.api.HOST}:${config.api.PORT}`);
+
+/* process.on('SIGINT', function(){
+    mongoose.connection.close(function(){
+      console.log("Mongoose default connection is disconnected due to application termination");
+       process.exit(0);
+      });
+}); */
