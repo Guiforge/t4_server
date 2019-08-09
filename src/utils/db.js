@@ -4,7 +4,7 @@ const config = require('../config/index');
 const logger = require('./logger');
 
 
-logger.debug(`Try to connect: ${config.db.uri}`)
+logger.debug(`Try to connect to the Database`)
 mongoose.connect(config.db.uri, { useNewUrlParser: true });
 
 //Get the default connection
