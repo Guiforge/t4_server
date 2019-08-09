@@ -9,10 +9,12 @@ const cors = require('cors');
 const config = require('./src/config/index');
 const initEndpoints = require('./src/routes/routes');
 const logger = require('./src/utils/logger');
+const initMiddle = require('./src/middlewares/middlewares');
 require('./src/utils/db'); // connect database
 
 // App
 const app = express();
+initMiddle(app);
 app.enable('trust proxy');
 
 app.use(new RateLimit(config.rate));
@@ -23,22 +25,7 @@ app.use(express.json({ limit: '3gb' }));
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// ignore authentication on the following routes
-// app.use(
-//   jwt({ secret: config.jwt.secret }).unless({
-//     path: ['/', '/auth/signup', '/auth/login', '/auth/forgot-password', '/auth/reset-password']
-//   })
-// );
-
-// throw an error if a jwt is not passed in the request
-app.use((err, req, res, next) => {
-  logger.debug('SALUT');
-  if (err.name === 'UnauthorizedError') {
-    res.status(401).send('Missing authentication credentials.');
-  }
-  next();
-});
-
+initMiddle(app);
 initEndpoints(app);
 
 app.listen(config.api.PORT, config.api.HOST);

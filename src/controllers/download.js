@@ -1,7 +1,9 @@
+const crypto = require('crypto');
 const logger = require('../utils/logger');
+const models = require('../models/models.js');
 
-function checkAuth(id, check)
 
-function download(step) {
+function download() {}
 
+module.exports = {
 }

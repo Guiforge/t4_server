@@ -1,5 +1,5 @@
 const { upload } = require('../controllers/controllers');
-const { Download } = require('../controllers/controllers');
+// const { Download } = require('../controllers/controllers');
 // const logger = require('../utils/logger')
 
 const initEndpoints = app => {
@@ -14,26 +14,15 @@ const initEndpoints = app => {
     }
   });
 
-  app.get('/download/:id', async (req, res) => {
-    try {
-      const { id } = req.params;
-      const reg = /^[0-9a-fA-F]{24}$/;
-      if (!id.match(reg)) {
-        throw new Error('Error Bad format');
-      }
+  app.get('/download/:id([0-9a-fA-F]{24})', async (req, res) => {
+    const { id } = req.params;
 
-
-      res.status(200);
-      res.send({ a: 'a' });
-    } catch (error) {
-      res.status(400);
-      res.send({ error: error.message });
-    }
+    res.status(200);
+    res.send({ id });
   });
 
   app.get('/Download/*', async (req, res) => {
-    res.status(400);
-    res.send({ Error: 'Bad Request' });
+    res.sendStatus(404);
   });
 };
 
