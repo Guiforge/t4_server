@@ -19,7 +19,7 @@ app.use(new RateLimit(config.rate));
 app.use(cors());
 app.use(compression());
 app.use(helmet());
-app.use(express.json({ limit: '300kb' }));
+app.use(express.json({ limit: '3gb' }));
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true }));
 
