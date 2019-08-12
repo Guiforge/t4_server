@@ -5,10 +5,28 @@ function arrayLimit(arr) {
   return arr.length >= 10;
 }
 
+function arrayLimitIV(arr) {
+  return arr.length === 12;
+}
+
 const dataShema = new mongoose.Schema({
   enc: {
-    meta: { type: [Number], required: true, validate: [arrayLimit, 'meta is too small'] },
-    file: { type: [Number], required: true, validate: [arrayLimit, 'file is too small'] }
+    meta: {
+      data: { type: [Number], required: true, validate: [arrayLimit, 'meta is too small'] },
+      ivMeta: {
+        type: [Number],
+        required: true,
+        validate: [arrayLimitIV, 'Ivmeta is not in correct format']
+      }
+    },
+    file: {
+      data: { type: [Number], required: true, validate: [arrayLimit, 'meta is too small'] },
+      ivFile: {
+        type: [Number],
+        required: true,
+        validate: [arrayLimitIV, 'Ivmeta is not in correct format']
+      }
+    }
   },
   key: {
     type: [Number],
