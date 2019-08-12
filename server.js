@@ -14,13 +14,13 @@ require('./src/utils/db'); // connect database
 
 // App
 const app = express();
-initMiddle(app);
 app.enable('trust proxy');
 
 app.use(new RateLimit(config.rate));
 app.use(cors());
 app.use(compression());
 app.use(helmet());
+app.use(helmet.hidePoweredBy());
 app.use(express.json({ limit: '3gb' }));
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true }));
