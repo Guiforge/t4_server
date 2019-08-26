@@ -20,11 +20,12 @@ const dataShema = new mongoose.Schema({
       }
     },
     file: {
-      data: { type: [Number], required: true, validate: [arrayLimit, 'meta is too small'] },
+      idFile: { Type: [Number] },
+      // data: { type: [Number], required: true, validate: [arrayLimit, 'meta is too small'] },
       ivFile: {
         type: [Number],
         required: true,
-        validate: [arrayLimitIV, 'Ivmeta is not in correct format']
+        validate: [arrayLimitIV, 'IvFile is not in correct format']
       }
     }
   },
