@@ -28,7 +28,7 @@ const initEndpoints = app => {
     }
   });
 
-  app.post(routes.getMeta, async (req, res) => {
+  app.get(routes.getMeta, async (req, res) => {
     const { id } = req.params;
     logger.debug(`log:${id}`);
     const meta = await download.getMeta(id);

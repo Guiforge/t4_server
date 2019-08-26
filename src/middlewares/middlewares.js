@@ -1,7 +1,7 @@
 const auth = require('./auth');
 
 function initMiddle(app) {
-  app.post(auth.middleCheckNonceRoutesPOST, auth.middleCheckNonce);
+  app.get(auth.middleCheckNonceRoutes, auth.middleCheckNonce);
 }
 
 module.exports = initMiddle;

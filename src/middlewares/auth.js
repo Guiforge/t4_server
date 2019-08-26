@@ -23,8 +23,13 @@ async function checkNonce(id, signNonce) {
 
 function middleCheckNonce(req, res, next) {
   const { id } = req.params;
-  const { signNonce } = req.body;
-  checkNonce(id, signNonce)
+  const signNonce = req.get('signNonce');
+  if (signNonce.length !== 184) {
+    res.sendStatus(401);
+    return;
+  }
+  const signNonceBuff = JSON.parse(Buffer.from(signNonce, 'base64').toString('ascii'));
+  checkNonce(id, signNonceBuff)
     .then(isAuth => {
       if (isAuth) {
         next();
@@ -40,5 +45,5 @@ function middleCheckNonce(req, res, next) {
 
 module.exports = {
   middleCheckNonce,
-  middleCheckNonceRoutesPOST: [routes.download, routes.getMeta]
+  middleCheckNonceRoutes: [routes.download, routes.getMeta]
 };
