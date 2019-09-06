@@ -10,6 +10,7 @@ const crypto = require('crypto');
 // }
 
 const dataShema = new mongoose.Schema({
+  // encrypt meta
   enc: {
     encrypted: { type: String, requires: true },
     auth: {
@@ -23,6 +24,7 @@ const dataShema = new mongoose.Schema({
     required: true,
     min: [arr => arr.byteLength === 92, 'Vector Meta should have length of 92']
   },
+  // keys that certify that you have the secret key with nonce Challenge
   keyAuth: {
     type: [Number],
     required: true,
@@ -37,11 +39,22 @@ const dataShema = new mongoose.Schema({
     default: Date.now,
     set: () => Date.now // trix to overide all wrong data
   },
+  // nonce challenge with keyAuth
   nonce: {
     type: String,
     set: () => crypto.randomBytes(42).toString('base64'), // trix to overide all wrong data
     default: crypto.randomBytes(42).toString('base64')
+  },
+  owner: {
+    type: String,
+    required: true,
+    min: [arr => arr.length === 512, 'owner tag have to length equal too 512']
   }
+  //   authTag: {
+  //     type: String,
+  //     required: true,
+  //     min: [arr => arr.length === 512, 'owner tag have to length equal too 512']
+  //   }
 });
 
 const Data = mongoose.model('Data', dataShema);

@@ -6,10 +6,11 @@ const logger = require('../utils/logger');
 const initEndpoints = app => {
   app.post(routes.upload, async (req, res) => {
     try {
-      const id = await upload(req.body);
+      const { id, owner } = await upload(req.body);
       res.status(200);
-      res.send({ id });
+      res.send({ id, owner });
     } catch (error) {
+      logger.error('error upload:', error);
       res.status(400);
       res.send({ Error: 'Error' });
     }
