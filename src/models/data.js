@@ -24,9 +24,13 @@ const dataShema = new mongoose.Schema({
     required: true,
     min: [arr => arr.byteLength === 92, 'Vector Meta should have length of 92']
   },
+  authTag: {
+    type: Buffer,
+    min: [arr => arr.byteLength === 16, 'authTag should have length of 16']
+  },
   // keys that certify that you have the secret key with nonce Challenge
   keyAuth: {
-    type: [Number],
+    type: Buffer,
     required: true,
     min: [arr => arr.length === 31, 'key should have length of 31']
   },

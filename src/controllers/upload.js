@@ -13,7 +13,7 @@ module.exports = async function upload(data) {
     logger.debug(`prepare to save! ${dataObj.id}`);
     await dataObj.save();
     logger.debug(`save ${dataObj.id}`);
-    return { id: dataObj.id, owner: dataObj.owner };
+    return dataObj;
   } catch (error) {
     logger.error(`Error upload: ${error}`);
     throw error;
