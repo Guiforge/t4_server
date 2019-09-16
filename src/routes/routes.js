@@ -1,32 +1,15 @@
-const { Readable } = require('stream');
-const { upload } = require('../controllers/controllers');
 const { download } = require('../controllers/controllers');
 const routes = require('../config/route');
 const logger = require('../utils/logger');
+const socketUpload = require('../controllers/socketUpload');
+const Data = require('../models/data');
 
 const initEndpoints = app => {
-  // app.post(routes.uploadMeta, async (req, res) => {
-  //   try {
-  //     const { id, owner } = await upload(req.body);
-  //     res.status(200);
-  //     res.send({ id, owner });
-  //   } catch (error) {
-  //     logger.error('error upload:', error);
-  //     res.status(400);
-  //     res.send({ Error: 'Error' });
-  //   }
-  // });
-
-  // app.put(routes.uploadAuthTag, async (req, res) => {
-  //   res.status(200);
-  //   res.send('OK');
-  // });
-
   app.get(routes.getNonce, async (req, res) => {
     const { id } = req.params;
-    logger.debug(`log:${id}`);
+    logger.debug(`log ask nonce :${id}`);
     const nonce = await download.getNonce(id);
-    logger.debug(`log:${nonce}`);
+    logger.debug(`log nonce is :${id}: ${nonce}`);
     if (!nonce) {
       res.sendStatus(404);
     } else {
@@ -37,88 +20,51 @@ const initEndpoints = app => {
 
   app.get(routes.getMeta, async (req, res) => {
     const { id } = req.params;
-    logger.debug(`log:${id}`);
+    logger.debug(`log ask meta :${id}`);
     const meta = await download.getMeta(id);
-    logger.debug(`log:${meta}`);
     if (!meta) {
       res.sendStatus(404);
     } else {
+      logger.debug(`meta existe :${id}`);
       res.status(200);
       res.send({ meta });
     }
   });
 
   app.get(routes.download, async (req, res) => {
-    const { id } = req.params;
+    try {
+      const { id } = req.params;
+      const meta = await Data.findById(id);
+      meta.down -= meta.down;
+      await meta.save();
+      const downloadStream = app.db.gridFSBucket.openDownloadStreamByName(id);
+      res.send(downloadStream);
+    } catch (error) {
+      res.sendStatus(404);
+    }
+  });
 
-    res.status(200);
-    res.send({ id });
+  app.delete(routes.delete, async (req, res) => {
+    const { id } = req.params;
+    logger.debug(`log ask delete id: :${id}`);
+    const objFile = app.db.fs.files.find({ filename: id });
+    if (!objFile) {
+      res.sendStatus(404);
+    } else {
+      logger.debug(`meta existe :${id} ${objFile.id}`);
+      app.db.gridFSBucket.delete(objFile.id);
+      const dataObj = Data.findById(id);
+      dataObj.remove();
+      res.sendStatus(200);
+    }
   });
 
   app.get(routes.download404, async (req, res) => {
     res.sendStatus(404);
   });
 
-  // on error or disconnect before send authtag suppr file
   app.socketServer.on('connection', socket => {
-    let writeStream;
-    let inStream;
-    let dataObj;
-
-    // Upload Meta ++++++++++++++++++++++++++++++++
-    socket.on('meta', async meta => {
-      if (!writeStream && !dataObj) {
-        try {
-          logger.debug('meta:', meta);
-          dataObj = await upload(meta);
-
-          // init for file
-          writeStream = app.db.gridFSBucket.openUploadStream(dataObj.id);
-          inStream = new Readable({
-            read() {}
-          });
-          inStream.pipe(writeStream);
-
-          socket.emit('meta', { id: dataObj.id, owner: dataObj.owner });
-        } catch (error) {
-          socket.emit('error', 'Error in upload meta');
-        }
-      } else {
-        socket.emit('error', 'only one file at time');
-      }
-    });
-    // +++++++++++++++++++++++++++++++++++++++++++++
-
-    // Upload File +++++++++++++++++++++++++++++++++
-    socket.on('chunk', chunk => {
-      if (!inStream) {
-        socket.error('error', 'Send meta before file');
-      } else {
-        inStream.push(chunk);
-      }
-    });
-    // +++++++++++++++++++++++++++++++++++++++++++++
-
-    // AuthTag +++++++++++++++++++++++++++++++++++++
-    socket.on('authTag', async authTag => {
-      if (!dataObj || !inStream) {
-        socket.emit('error', 'Send meta and file before');
-      } else {
-        try {
-          inStream.push(null);
-          dataObj.set('authTag', authTag);
-          logger.debug(dataObj.authTag);
-          await dataObj.save();
-          socket.emit('authTag', 'Ok');
-          writeStream = undefined;
-          inStream = undefined;
-          dataObj = undefined;
-        } catch (error) {
-          socket.emit('error', error);
-        }
-      }
-    });
-    // +++++++++++++++++++++++++++++++++++++++++++++
+    socketUpload(app, socket);
   });
 };
 

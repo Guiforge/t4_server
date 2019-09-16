@@ -2,6 +2,7 @@ const crypto = require('crypto');
 const models = require('../models/models.js');
 const logger = require('../utils/logger');
 const routes = require('../config/route');
+const { checkOwner } = require('../controllers/file');
 
 async function checkNonce(id, signNonce) {
   if (!id || !signNonce) {
@@ -22,7 +23,7 @@ async function checkNonce(id, signNonce) {
 }
 
 function middleCheckNonce(req, res, next) {
-  const { id } = req.params;
+  const { id } = req.get('id');
   const signNonce = req.get('signNonce');
   if (signNonce.length !== 184) {
     res.sendStatus(401);
@@ -43,7 +44,32 @@ function middleCheckNonce(req, res, next) {
     });
 }
 
+function middleCheckOwner(req, res, next) {
+  const { id } = req.get('id');
+  const { owner } = req.get('owner');
+
+  checkOwner(id, owner).then(isSameOwner => {
+    if (isSameOwner) {
+      next();
+    } else {
+      res.sendStatus(401);
+    }
+  });
+}
+
+function middleCheckDown(req, res, next) {
+  const { id } = req.get('id');
+  const meta = Data.findById(id);
+  if (meta.down <= 0) {
+    res.sendStatus(404);
+  }
+}
+
 module.exports = {
+  middleCheckDown,
+  middleCheckDownRoutes: [routes.download],
+  middleCheckOwner,
+  middleCheckOwnerRoutes: [routes.delete],
   middleCheckNonce,
   middleCheckNonceRoutes: [routes.download, routes.getMeta]
 };

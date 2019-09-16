@@ -40,7 +40,22 @@ async function getSignKey(id) {
   });
 }
 
+async function getOwner(id) {
+  logger.debug(`Ask owner for : ${id}`);
+  return new Promise((resolve, reject) => {
+    Data.findById(id, 'owner', (err, data) => {
+      if (err || !data) {
+        reject();
+      } else {
+        resolve(data.toObject().owner);
+      }
+    });
+  });
+}
+
+// deprecated
 async function getFile(id) {
+  logger.debug('DEPRECATED !!!!!');
   logger.debug(`Ask file for : ${id}`);
   return new Promise((resolve, reject) => {
     Data.findById(id, 'enc', (err, file) => {
@@ -58,5 +73,6 @@ module.exports = {
   getNonce,
   getSignKey,
   getMeta,
-  getFile
+  getFile,
+  getOwner
 };
