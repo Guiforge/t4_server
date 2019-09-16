@@ -7,7 +7,7 @@ const cors = require('cors');
 const http = require('http');
 const io = require('socket.io');
 
-const initCron = require('./src/cron');
+// const initCron = require('./src/cron');
 // var server = require('http').createServer(app);
 // var io = require('socket.io')(server);
 // const jwt = require('express-jwt');
@@ -43,7 +43,7 @@ dbConnect().then(db => {
   // app.listen(config.api.PORT, config.api.HOST);
   server.listen(config.api.PORT);
   logger.info(`Running on http://${config.api.HOST}:${config.api.PORT}`);
-  initCron(app);
+  // initCron(app);
   /* process.on('SIGINT', function(){
     mongoose.connection.close(function(){
       console.log("Mongoose default connection is disconnected due to application termination");

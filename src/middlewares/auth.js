@@ -23,9 +23,9 @@ async function checkNonce(id, signNonce) {
 }
 
 function middleCheckNonce(req, res, next) {
-  const { id } = req.get('id');
+  const { id } = req.params;
   const signNonce = req.get('signNonce');
-  if (signNonce.length !== 184) {
+  if (signNonce.length !== 188) {
     res.sendStatus(401);
     return;
   }
@@ -62,6 +62,8 @@ function middleCheckDown(req, res, next) {
   const meta = Data.findById(id);
   if (meta.down <= 0) {
     res.sendStatus(404);
+  } else {
+    next();
   }
 }
 

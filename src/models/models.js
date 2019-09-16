@@ -21,20 +21,19 @@ async function getMeta(id) {
       if (err || !meta) {
         reject();
       } else {
-        resolve(meta.toObject().enc.meta);
+        resolve(meta.toObject().enc);
       }
     });
   });
 }
-
 async function getSignKey(id) {
   logger.debug(`Ask key for : ${id}`);
   return new Promise((resolve, reject) => {
-    Data.findById(id, 'key', (err, key) => {
+    Data.findById(id, 'keyAuth', (err, key) => {
       if (err || !key) {
         reject();
       } else {
-        resolve(key.toObject().key);
+        resolve(key.toObject().keyAuth.buffer);
       }
     });
   });

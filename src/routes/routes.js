@@ -9,7 +9,6 @@ const initEndpoints = app => {
     const { id } = req.params;
     logger.debug(`log ask nonce :${id}`);
     const nonce = await download.getNonce(id);
-    logger.debug(`log nonce is :${id}: ${nonce}`);
     if (!nonce) {
       res.sendStatus(404);
     } else {
