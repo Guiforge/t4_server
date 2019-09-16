@@ -17,15 +17,16 @@ async function getNonce(id) {
 async function getMeta(id) {
   logger.debug(`Ask meta for : ${id}`);
   return new Promise((resolve, reject) => {
-    Data.findById(id, 'enc', (err, meta) => {
+    Data.findById(id, 'enc ivMeta', (err, meta) => {
       if (err || !meta) {
         reject();
       } else {
-        resolve(meta.toObject().enc);
+        resolve({ enc: meta.toObject().enc, ivMeta: meta.toObject().ivMeta });
       }
     });
   });
 }
+
 async function getSignKey(id) {
   logger.debug(`Ask key for : ${id}`);
   return new Promise((resolve, reject) => {
