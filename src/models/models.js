@@ -17,11 +17,16 @@ async function getNonce(id) {
 async function getMeta(id) {
   logger.debug(`Ask meta for : ${id}`);
   return new Promise((resolve, reject) => {
-    Data.findById(id, 'enc ivMeta', (err, meta) => {
+    Data.findById(id, 'enc ivMeta sizeZip', (err, meta) => {
       if (err || !meta) {
         reject();
       } else {
-        resolve({ enc: meta.toObject().enc, ivMeta: meta.toObject().ivMeta });
+        const ret = {
+          enc: meta.toObject().enc,
+          ivMeta: meta.toObject().ivMeta,
+          sizeZip: meta.toObject().sizeZip
+        };
+        resolve(ret);
       }
     });
   });

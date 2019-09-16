@@ -4,6 +4,8 @@ const logger = require('../utils/logger');
 const routes = require('../config/route');
 const { checkOwner } = require('../controllers/file');
 
+const { Data } = models;
+
 async function checkNonce(id, signNonce) {
   if (!id || !signNonce) {
     return false;
@@ -25,10 +27,10 @@ async function checkNonce(id, signNonce) {
 function middleCheckNonce(req, res, next) {
   const { id } = req.params;
   const signNonce = req.get('signNonce');
-  if (signNonce.length !== 188) {
-    res.sendStatus(401);
-    return;
-  }
+  //   if (signNonce.length !== 188) {
+  //     res.sendStatus(401);
+  //     return;
+  //   }
   const signNonceBuff = JSON.parse(Buffer.from(signNonce, 'base64').toString('ascii'));
   checkNonce(id, signNonceBuff)
     .then(isAuth => {

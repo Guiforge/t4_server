@@ -28,6 +28,9 @@ const dataShema = new mongoose.Schema({
     type: Buffer,
     min: [arr => arr.byteLength === 16, 'authTag should have length of 16']
   },
+  sizeZip: {
+    type: Number
+  },
   // keys that certify that you have the secret key with nonce Challenge
   keyAuth: {
     type: Buffer,

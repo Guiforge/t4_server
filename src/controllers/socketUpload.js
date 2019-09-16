@@ -6,6 +6,7 @@ module.exports = (app, socket) => {
   let writeStream;
   let inStream;
   let dataObj;
+  let sizeZip = 0;
 
   function removeUseless() {
     if (dataObj) {
@@ -64,6 +65,7 @@ module.exports = (app, socket) => {
     if (!inStream) {
       socket.error('error', 'Send meta before file');
     } else {
+      sizeZip += chunk.length;
       inStream.push(chunk);
     }
   });
@@ -77,6 +79,7 @@ module.exports = (app, socket) => {
       try {
         inStream.push(null);
         dataObj.set('authTag', authTag);
+        dataObj.set('sizeZip', sizeZip);
         logger.debug(dataObj.authTag);
         await dataObj.save();
         socket.emit('authTag', 'Ok');
