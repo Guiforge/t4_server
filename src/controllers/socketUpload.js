@@ -40,7 +40,7 @@ module.exports = (app, socket) => {
   socket.on('meta', async meta => {
     if (!writeStream && !dataObj) {
       try {
-        logger.debug('meta:', meta);
+        logger.debug('Upload meta:', meta);
         dataObj = await upload(meta);
 
         // init for file
@@ -80,7 +80,6 @@ module.exports = (app, socket) => {
         inStream.push(null);
         dataObj.set('authTag', authTag);
         dataObj.set('sizeZip', sizeZip);
-        logger.debug(dataObj.authTag);
         await dataObj.save();
         socket.emit('authTag', 'Ok');
         writeStream = undefined;

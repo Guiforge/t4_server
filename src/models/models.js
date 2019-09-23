@@ -2,7 +2,6 @@ const Data = require('./data');
 const logger = require('../utils/logger');
 
 async function getNonce(id) {
-  logger.debug(`Ask nonce for : ${id}`);
   return new Promise((resolve, reject) => {
     Data.findById(id, 'nonce', (err, nonce) => {
       if (err || !nonce) {
@@ -15,16 +14,16 @@ async function getNonce(id) {
 }
 
 async function getMeta(id) {
-  logger.debug(`Ask meta for : ${id}`);
   return new Promise((resolve, reject) => {
-    Data.findById(id, 'enc ivMeta sizeZip', (err, meta) => {
+    Data.findById(id, 'enc ivMeta sizeZip authTag', (err, meta) => {
       if (err || !meta) {
         reject();
       } else {
         const ret = {
           enc: meta.toObject().enc,
           ivMeta: meta.toObject().ivMeta,
-          sizeZip: meta.toObject().sizeZip
+          sizeZip: meta.toObject().sizeZip,
+          authTag: meta.toObject().authTag
         };
         resolve(ret);
       }
@@ -33,7 +32,6 @@ async function getMeta(id) {
 }
 
 async function getSignKey(id) {
-  logger.debug(`Ask key for : ${id}`);
   return new Promise((resolve, reject) => {
     Data.findById(id, 'keyAuth', (err, key) => {
       if (err || !key) {
@@ -46,7 +44,6 @@ async function getSignKey(id) {
 }
 
 async function getOwner(id) {
-  logger.debug(`Ask owner for : ${id}`);
   return new Promise((resolve, reject) => {
     Data.findById(id, 'owner', (err, data) => {
       if (err || !data) {
