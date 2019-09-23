@@ -37,8 +37,7 @@ const initEndpoints = app => {
       // meta.down -= meta.down;
       // await meta.save();
       const downloadStream = app.db.gridFSBucket.openDownloadStreamByName(id);
-      console.log('DOWNLOAD FILE')
-      res.send(downloadStream);
+      downloadStream.pipe(res);
     } catch (error) {
       res.sendStatus(404);
     }

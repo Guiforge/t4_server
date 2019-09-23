@@ -64,13 +64,14 @@ function middleCheckOwner(req, res, next) {
 }
 
 function middleCheckDown(req, res, next) {
-  const { id } = req.get('id');
-  const meta = Data.findById(id);
-  if (meta.down <= 0) {
-    res.sendStatus(404);
-  } else {
+//   const { id } = req.params;
+//   const meta = Data.findById(id);
+//   if (meta.down <= 0) {
+//     res.sendStatus(404);
+//   } else {
+//     next();
+//   }
     next();
-  }
 }
 
 module.exports = {
