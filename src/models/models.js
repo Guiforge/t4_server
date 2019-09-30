@@ -55,6 +55,15 @@ async function getOwner(id) {
   });
 }
 
+async function cleanOne(id, app) {
+  try {
+    await Data.deleteOne({ _id: id });
+    await app.db.gridFSBucket.delete(id);
+  } catch (error) {
+    logger.error('cleanOne', {id, error})
+  }
+}
+
 // deprecated
 async function getFile(id) {
   logger.debug('DEPRECATED !!!!!');
@@ -76,5 +85,6 @@ module.exports = {
   getSignKey,
   getMeta,
   getFile,
-  getOwner
+  getOwner,
+  cleanOne
 };

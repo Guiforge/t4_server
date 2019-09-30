@@ -33,9 +33,9 @@ const initEndpoints = app => {
   app.get(routes.download, async (req, res) => {
     try {
       const { id } = req.params;
-      // const meta = await Data.findById(id);
-      // meta.down -= meta.down;
-      // await meta.save();
+      const meta = await Data.findById(id);
+      meta.down = meta.down - 1;
+      await meta.save();
       const downloadStream = app.db.gridFSBucket.openDownloadStreamByName(id);
       downloadStream.pipe(res);
     } catch (error) {

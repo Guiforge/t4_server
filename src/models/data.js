@@ -40,10 +40,12 @@ const dataShema = new mongoose.Schema({
   down: { type: Number, default: 1 },
   days: {
     type: Date,
-    default: (() => {
-      const date = new Date();
-      date.setDate(date.getDate() + 1);
-    })()
+    required: true,
+    set: (nbDay) => {
+      const date = new Date(Date.now())
+      date.setDate(date.getDate() + nbDay);
+      return date
+    }
   },
   creationDate: {
     type: Date,
@@ -61,11 +63,6 @@ const dataShema = new mongoose.Schema({
     required: true,
     min: [arr => arr.length === 512, 'owner tag have to length equal too 512']
   }
-  //   authTag: {
-  //     type: String,
-  //     required: true,
-  //     min: [arr => arr.length === 512, 'owner tag have to length equal too 512']
-  //   }
 });
 
 const Data = mongoose.model('Data', dataShema);

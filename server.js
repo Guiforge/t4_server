@@ -7,7 +7,7 @@ const cors = require('cors');
 const http = require('http');
 const io = require('socket.io');
 
-// const initCron = require('./src/cron');
+const initCron = require('./src/cron');
 // var server = require('http').createServer(app);
 // var io = require('socket.io')(server);
 // const jwt = require('express-jwt');
@@ -17,6 +17,7 @@ const initEndpoints = require('./src/routes/routes');
 const logger = require('./src/utils/logger');
 const initMiddle = require('./src/middlewares/middlewares');
 const dbConnect = require('./src/utils/dbConnect'); // connect database
+const Cron = require('node-cron');
 
 dbConnect().then(db => {
   // App
@@ -39,6 +40,7 @@ dbConnect().then(db => {
 
   initMiddle(app);
   initEndpoints(app);
+  initCron(app);
 
   // app.listen(config.api.PORT, config.api.HOST);
   server.listen(config.api.PORT);

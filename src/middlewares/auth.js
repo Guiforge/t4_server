@@ -63,20 +63,26 @@ function middleCheckOwner(req, res, next) {
   });
 }
 
-function middleCheckDown(req, res, next) {
-//   const { id } = req.params;
-//   const meta = Data.findById(id);
-//   if (meta.down <= 0) {
-//     res.sendStatus(404);
-//   } else {
-//     next();
-//   }
-    next();
-}
+  //middleware with app
+  function getAppMiddle(app) {
+    return {
+      middleCheckDown(req, res, next) {
+        const { id } = req.params;
+        Data.findById(id).then((metaDoc) => {
+          if (!metaDoc || metaDoc.down <= 0) {
+            res.sendStatus(404);
+            models.cleanOne(id, app)
+          } else {
+            next();
+          }
+        })
+      }
+    }
+  }
 
 module.exports = {
-  middleCheckDown,
-  middleCheckDownRoutes: [routes.download],
+  getAppMiddle,
+  middleCheckDownRoutes: [routes.download, routes.getMeta],
   middleCheckOwner,
   middleCheckOwnerRoutes: [routes.delete],
   middleCheckNonce,

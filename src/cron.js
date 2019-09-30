@@ -3,9 +3,9 @@ const logger = require('./utils/logger');
 const clean = require('./utils/clean');
 
 function initCron(app) {
-  Cron.schedule('1 0 * * * ', () => {
+  Cron.schedule('1 0 * * * ', async () => {
     logger.debug('Start Clean !');
-    clean(app);
+    await clean(app);
     logger.debug('End Clean !');
   });
 }
