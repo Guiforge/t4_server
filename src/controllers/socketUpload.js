@@ -31,8 +31,12 @@ module.exports = (app, socket) => {
       logger.error(error);
     } finally {
       // change envent error to err
-      socket.emit('error', msg);
-      socket.close(true);
+      try {
+        // socket.emit('error', msg).catch(e => logger.error(e));
+        socket.disconnect(true);
+      } catch (error) {
+        logger.error('ee', error);
+      }
     }
   }
 

@@ -17,7 +17,7 @@ const initEndpoints = require('./src/routes/routes');
 const logger = require('./src/utils/logger');
 const initMiddle = require('./src/middlewares/middlewares');
 const dbConnect = require('./src/utils/dbConnect'); // connect database
-const Cron = require('node-cron');
+const clean = require('./src/utils/clean');
 
 dbConnect().then(db => {
   // App
@@ -41,7 +41,7 @@ dbConnect().then(db => {
   initMiddle(app);
   initEndpoints(app);
   initCron(app);
-
+  clean(app);
   // app.listen(config.api.PORT, config.api.HOST);
   server.listen(config.api.PORT);
   logger.info(`Running on http://${config.api.HOST}:${config.api.PORT}`);

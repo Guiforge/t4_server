@@ -34,6 +34,7 @@ const initEndpoints = app => {
     try {
       const { id } = req.params;
       const meta = await Data.findById(id);
+      // eslint-disable-next-line operator-assignment
       meta.down = meta.down - 1;
       await meta.save();
       const downloadStream = app.db.gridFSBucket.openDownloadStreamByName(id);

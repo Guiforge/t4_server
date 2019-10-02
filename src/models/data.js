@@ -41,10 +41,10 @@ const dataShema = new mongoose.Schema({
   days: {
     type: Date,
     required: true,
-    set: (nbDay) => {
-      const date = new Date(Date.now())
+    set: nbDay => {
+      const date = new Date(Date.now());
       date.setDate(date.getDate() + nbDay);
-      return date
+      return date;
     }
   },
   creationDate: {
