@@ -60,7 +60,7 @@ async function cleanOne(id, app) {
     await Data.deleteOne({ _id: id });
     await app.db.gridFSBucket.delete(id);
   } catch (error) {
-    logger.error('cleanOne', {id, error})
+    logger.error('cleanOne', { id, error });
   }
 }
 

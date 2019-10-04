@@ -3,6 +3,7 @@ const routes = require('../config/route');
 const logger = require('../utils/logger');
 const socketUpload = require('../controllers/socketUpload');
 const Data = require('../models/data');
+const models = require('../models/models');
 
 const initEndpoints = app => {
   app.get(routes.getNonce, async (req, res) => {
@@ -45,17 +46,13 @@ const initEndpoints = app => {
   });
 
   app.delete(routes.delete, async (req, res) => {
-    const { id } = req.params;
-    logger.debug(`log ask delete id: :${id}`);
-    const objFile = app.db.fs.files.find({ filename: id });
-    if (!objFile) {
-      res.sendStatus(404);
-    } else {
-      logger.debug(`meta existe :${id} ${objFile.id}`);
-      app.db.gridFSBucket.delete(objFile.id);
-      const dataObj = Data.findById(id);
-      dataObj.remove();
+    try {
+      const { id } = req.params;
+      logger.debug(`log ask delete id: :${id}`);
+      models.cleanOne(id, app);
       res.sendStatus(200);
+    } catch (error) {
+      res.sendStatus(404);
     }
   });
 
@@ -65,6 +62,22 @@ const initEndpoints = app => {
 
   app.socketServer.on('connection', socket => {
     socketUpload(app, socket);
+  });
+
+  app.get(routes.infoFile, async (req, res) => {
+    try {
+      const { id } = req.params;
+      Data.findById(id, 'down, days', (err, meta) => {
+        if (err) {
+          res.sendStatus(404);
+        } else {
+          res.status(200);
+          res.send({ down: meta.down, date: meta.days });
+        }
+      });
+    } catch (error) {
+      res.sendStatus(404);
+    }
   });
 };
 

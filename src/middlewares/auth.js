@@ -51,16 +51,21 @@ function middleCheckNonce(req, res, next) {
 }
 
 function middleCheckOwner(req, res, next) {
-  const { id } = req.get('id');
-  const { owner } = req.get('owner');
+  try {
+    const { id } = req.params;
+    const { owner } = req.get('owner');
 
-  checkOwner(id, owner).then(isSameOwner => {
-    if (isSameOwner) {
-      next();
-    } else {
-      res.sendStatus(401);
-    }
-  });
+    checkOwner(id, owner).then(isSameOwner => {
+      if (isSameOwner) {
+        next();
+      } else {
+        res.sendStatus(401);
+        next();
+      }
+    });
+  } catch (error) {
+    res.sendStatus(404);
+  }
 }
 
 // middleware with app
@@ -93,10 +98,10 @@ function getAppMiddle(app) {
 
 module.exports = {
   getAppMiddle,
-  middleCheckDownRoutes: [routes.download, routes.getMeta],
-  middleCheckDateRoutes: [routes.download, routes.getMeta],
+  middleCheckDownRoutes: [routes.download, routes.getMeta, routes.infoFile],
+  middleCheckDateRoutes: [routes.download, routes.getMeta, routes.infoFile],
   middleCheckOwner,
-  middleCheckOwnerRoutes: [routes.delete],
+  middleCheckOwnerRoutes: [routes.delete, routes.infoFile],
   middleCheckNonce,
   middleCheckNonceRoutes: [routes.download, routes.getMeta]
 };
