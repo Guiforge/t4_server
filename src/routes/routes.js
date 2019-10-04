@@ -67,12 +67,12 @@ const initEndpoints = app => {
   app.get(routes.infoFile, async (req, res) => {
     try {
       const { id } = req.params;
-      Data.findById(id, 'down, days', (err, meta) => {
+      Data.findById(id, 'down days', (err, meta) => {
         if (err) {
           res.sendStatus(404);
         } else {
           res.status(200);
-          res.send({ down: meta.down, date: meta.days });
+          res.send({ down: meta.down, days: meta.days });
         }
       });
     } catch (error) {

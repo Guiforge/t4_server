@@ -53,14 +53,12 @@ function middleCheckNonce(req, res, next) {
 function middleCheckOwner(req, res, next) {
   try {
     const { id } = req.params;
-    const { owner } = req.get('owner');
-
+    const owner = req.get('owner');
     checkOwner(id, owner).then(isSameOwner => {
       if (isSameOwner) {
         next();
       } else {
         res.sendStatus(401);
-        next();
       }
     });
   } catch (error) {
