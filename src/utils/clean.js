@@ -31,9 +31,7 @@ async function clean(app) {
     }
     // eslint-disable-next-line no-underscore-dangle
     ids = ids.map(obId => obId._id);
-    Data.deleteMany({ _id: { $in: ids } }, err => {
-      logger.error('Clean function deleteMany', err);
-    });
+    Data.deleteMany({ _id: { $in: ids } });
     ids = ids.map(v => v._id.toString());
 
     const find = await app.db.gridFSBucket.find({
