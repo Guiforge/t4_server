@@ -2,7 +2,6 @@ const crypto = require('crypto');
 const models = require('../models/models.js');
 const logger = require('../utils/logger');
 const routes = require('../config/route');
-const { checkOwner } = require('../controllers/file');
 
 const { Data } = models;
 
@@ -28,10 +27,6 @@ function middleCheckNonce(req, res, next) {
   try {
     const { id } = req.params;
     const signNonce = req.get('signNonce');
-    //   if (signNonce.length !== 188) {
-    //     res.sendStatus(401);
-    //     return;
-    //   }
     const signNonceBuff = JSON.parse(Buffer.from(signNonce, 'base64').toString('ascii'));
     checkNonce(id, signNonceBuff)
       .then(isAuth => {
@@ -47,6 +42,18 @@ function middleCheckNonce(req, res, next) {
       });
   } catch (error) {
     res.sendStatus(401);
+  }
+}
+
+async function checkOwner(id, owner) {
+  if (!id || !owner) {
+    return false;
+  }
+  try {
+    const realOwner = await models.getOwner(id);
+    return Buffer.compare(Buffer.from(realOwner), Buffer.from(owner)) === 0;
+  } catch (err) {
+    return false;
   }
 }
 

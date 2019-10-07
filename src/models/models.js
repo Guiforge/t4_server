@@ -64,27 +64,11 @@ async function cleanOne(id, app) {
   }
 }
 
-// deprecated
-async function getFile(id) {
-  logger.debug('DEPRECATED !!!!!');
-  logger.debug(`Ask file for : ${id}`);
-  return new Promise((resolve, reject) => {
-    Data.findById(id, 'enc', (err, file) => {
-      if (err || !file) {
-        reject();
-      } else {
-        resolve(file.toObject().enc.file);
-      }
-    });
-  });
-}
-
 module.exports = {
   Data,
   getNonce,
   getSignKey,
   getMeta,
-  getFile,
   getOwner,
   cleanOne
 };

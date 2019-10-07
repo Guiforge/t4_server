@@ -6,6 +6,7 @@ async function clean(app) {
   try {
     const limitDate = new Date(Date.now());
     limitDate.setDate(limitDate.getDate() + 11);
+    // get meta with limit day < now && creationDate < 11
     const query = Data.find(
       {
         $or: [
@@ -50,6 +51,7 @@ async function clean(app) {
       });
     });
   } catch (error) {
+    logger.error('Clean function', { error });
     if (error) {
       logger.error('Clean function', { error });
     }
