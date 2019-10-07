@@ -5,6 +5,7 @@ const RateLimit = require('express-rate-limit');
 const bodyParser = require('body-parser');
 const http = require('http');
 const io = require('socket.io');
+const cors = require('cors');
 
 const initCron = require('./src/cron');
 const config = require('./src/config/index');
@@ -30,6 +31,7 @@ dbConnect().then(db => {
   app.use(express.json({ limit: '3kb' }));
   app.use(bodyParser.json()); // support json encoded bodies
   app.use(bodyParser.urlencoded({ extended: true }));
+  app.use(cors());
 
   initMiddle(app);
   initEndpoints(app);

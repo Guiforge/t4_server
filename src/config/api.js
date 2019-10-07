@@ -1,4 +1,9 @@
-module.exports = {
-  HOST: '0.0.0.0',
-  PORT: '8070'
+const api = {
+  HOST: 'localhost',
+  PORT: '8070',
+  PROTO: 'http'
 };
+
+api.ALL = `${api.PROTO}://${api.HOST}:${api.PORT}`;
+
+module.exports = api;

@@ -1,9 +1,7 @@
 const regId = '[0-9a-fA-F]{24}';
 
 module.exports = {
-  uploadMeta: '/upload/meta',
   infoFile: `/info/:id(${regId})`,
-  uploadAuthTag: `/upload/authTag/:id(${regId})`,
   delete: `/file/delete/:id(${regId})`,
   download: `/download/:id(${regId})`,
   download404: '/download/*',
