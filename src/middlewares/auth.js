@@ -9,18 +9,13 @@ async function checkNonce(id, signNonce) {
   if (!id || !signNonce) {
     return false;
   }
-  try {
-    const nonce = await models.getNonce(id);
-    const signKey = Buffer.from(await models.getSignKey(id));
-    const hmac = crypto.createHmac('sha256', signKey);
-    hmac.write(nonce);
-    hmac.end();
-    const signNonceReal = hmac.read();
-    return Buffer.compare(Buffer.from(signNonce.data), signNonceReal) === 0;
-  } catch (err) {
-    logger.debug('Error', err);
-    return false;
-  }
+  const nonce = await models.getNonce(id);
+  const signKey = Buffer.from(await models.getSignKey(id));
+  const hmac = crypto.createHmac('sha256', signKey);
+  hmac.write(nonce);
+  hmac.end();
+  const signNonceReal = hmac.read();
+  return Buffer.compare(Buffer.from(signNonce.data), signNonceReal) === 0;
 }
 
 function middleCheckNonce(req, res, next) {
@@ -41,7 +36,7 @@ function middleCheckNonce(req, res, next) {
         res.sendStatus(404);
       });
   } catch (error) {
-    res.sendStatus(401);
+    res.sendStatus(404);
   }
 }
 
@@ -49,25 +44,26 @@ async function checkOwner(id, owner) {
   if (!id || !owner) {
     return false;
   }
-  try {
-    const realOwner = await models.getOwner(id);
-    return Buffer.compare(Buffer.from(realOwner), Buffer.from(owner)) === 0;
-  } catch (err) {
-    return false;
-  }
+  const realOwner = await models.getOwner(id);
+  return Buffer.compare(Buffer.from(realOwner), Buffer.from(owner)) === 0;
 }
 
 function middleCheckOwner(req, res, next) {
   try {
     const { id } = req.params;
     const owner = req.get('owner');
-    checkOwner(id, owner).then(isSameOwner => {
-      if (isSameOwner) {
-        next();
-      } else {
-        res.sendStatus(401);
-      }
-    });
+    checkOwner(id, owner)
+      .then(isSameOwner => {
+        if (isSameOwner) {
+          next();
+        } else {
+          res.sendStatus(401);
+        }
+      })
+      .catch(err => {
+        logger.log('error check Owner', err);
+        res.sendStatus(404);
+      });
   } catch (error) {
     res.sendStatus(404);
   }
@@ -77,26 +73,34 @@ function middleCheckOwner(req, res, next) {
 function getAppMiddle(app) {
   return {
     middleCheckDown(req, res, next) {
-      const { id } = req.params;
-      Data.findById(id).then(metaDoc => {
-        if (!metaDoc || metaDoc.down <= 0) {
-          res.sendStatus(404);
-          models.cleanOne(id, app);
-        } else {
-          next();
-        }
-      });
+      try {
+        const { id } = req.params;
+        Data.findById(id).then(metaDoc => {
+          if (!metaDoc || metaDoc.down <= 0) {
+            res.sendStatus(404);
+            models.cleanOne(id, app);
+          } else {
+            next();
+          }
+        });
+      } catch (error) {
+        res.sendStatus(404);
+      }
     },
     middleCheckDate(req, res, next) {
-      const { id } = req.params;
-      Data.findById(id).then(metaDoc => {
-        if (!metaDoc || metaDoc.days < Date.now()) {
-          res.sendStatus(404);
-          models.cleanOne(id, app);
-        } else {
-          next();
-        }
-      });
+      try {
+        const { id } = req.params;
+        Data.findById(id).then(metaDoc => {
+          if (!metaDoc || metaDoc.days < Date.now()) {
+            res.sendStatus(404);
+            models.cleanOne(id, app);
+          } else {
+            next();
+          }
+        });
+      } catch (error) {
+        res.sendStatus(404);
+      }
     }
   };
 }

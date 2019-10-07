@@ -58,7 +58,13 @@ async function getOwner(id) {
 async function cleanOne(id, app) {
   try {
     await Data.deleteOne({ _id: id });
-    await app.db.gridFSBucket.delete(id);
+    const idFiles = await app.db.gridFSBucket.find({ filename: id });
+    idFiles.forEach(file => {
+      // eslint-disable-next-line no-underscore-dangle
+      app.db.gridFSBucket.delete(file._id).catch(err => {
+        logger.error('cleanOne File', { id, err });
+      });
+    });
   } catch (error) {
     logger.error('cleanOne', { id, error });
   }
