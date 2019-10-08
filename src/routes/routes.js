@@ -56,10 +56,6 @@ const initEndpoints = app => {
     }
   });
 
-  app.get(routes.download404, async (req, res) => {
-    res.sendStatus(404);
-  });
-
   app.socketServer.on('connection', socket => {
     socketUpload(app, socket);
   });

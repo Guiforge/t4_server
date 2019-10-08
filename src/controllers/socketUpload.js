@@ -49,7 +49,7 @@ module.exports = (app, socket) => {
         });
         inStream.pipe(writeStream);
 
-        socket.emit('meta', { id: dataObj.id, owner: dataObj.owner });
+        socket.emit('meta', { id: dataObj.id });
       } catch (error) {
         sendErrorDisconnect('Error in upload meta');
       }
