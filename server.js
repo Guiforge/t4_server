@@ -24,7 +24,9 @@ dbConnect().then(db => {
   app.socketServer = socketServer;
   app.db = db;
 
-  app.use(new RateLimit(config.rate));
+  if (!process.env.NORATE) {
+    app.use(new RateLimit(config.rate));
+  }
   app.use(compression());
   app.use(helmet());
   app.use(helmet.hidePoweredBy());
