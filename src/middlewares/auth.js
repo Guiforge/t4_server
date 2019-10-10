@@ -61,7 +61,7 @@ function middleCheckOwner(req, res, next) {
         }
       })
       .catch(err => {
-        logger.log('error check Owner', err);
+        logger.error('error check Owner', err);
         res.sendStatus(404);
       });
   } catch (error) {
