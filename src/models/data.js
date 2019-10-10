@@ -31,14 +31,28 @@ const dataShema = new mongoose.Schema({
     required: true,
     min: [arr => arr.length === 31, 'key should have length of 31']
   },
-  down: { type: Number, default: 1 },
+  down: {
+    type: Number,
+    default: 1,
+    set: down => {
+      const downret = Math.abs(down);
+      if (downret > 10000) {
+        throw Error('Day must be lower than 10 000');
+      } else {
+        return Math.abs(down);
+      }
+    }
+  },
   days: {
     type: Date,
     required: true,
     set: nbDay => {
-      const date = new Date(Date.now());
-      date.setDate(date.getDate() + nbDay);
-      return date;
+      if (nbDay > 0 && nbDay <= 10) {
+        const date = new Date(Date.now());
+        date.setDate(date.getDate() + nbDay);
+        return date;
+      }
+      throw Error('Date is not beetween 1 and 10');
     }
   },
   creationDate: {
